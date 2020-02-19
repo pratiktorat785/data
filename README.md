@@ -1,1 +1,574 @@
-# data
+---
+title: "First session: the very basics
+"
+author: "pratik"
+date: "19/02/2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+##First session: the very basics
+```{r}
+library(dplyr)
+library(gapminder)
+
+# we also installed the tidyverse - some people had problems
+library(tidyverse)
+library(ggplot2)
+```
+
+
+
+```{r}
+str(gapminder)
+```
+
+We next covered assignment, objects and functions. Working from the console, we talked about each line:
+
+
+```{r}
+x <- seq(1,10)
+date() # no arguments
+objects()
+ls()
+rm(list = ls()) # or click broom
+```
+The discussion about objects and the broom in RStudio brought us onto what the different windows in the IDE are used for. We set up an R project and discussed the working directory.
+
+```{r}
+getwd()
+
+``` 
+Still working in the console, we went through the following commands to save a simple file and generate a basic plot
+
+
+```{r}
+a <- 2
+b <- -3
+sig_sq <- 0.5
+x <- runif(40)
+y <- a + b * x + rnorm(40, sd = sqrt(sig_sq))
+avg_x <- mean(x)
+avg_x
+```
+
+```{r}
+#write(avg_x, "avg_x.txt")
+plot(x, y)
+abline(a, b, col = "purple")
+```
+
+
+# make a vector called y of 100 random numbers from a normal distribution
+```{r}
+#first we will set the same seed, 1234
+set.seed(1234)
+```
+
+# make a vector called y of 100 random numbers from a normal distribution
+```{r}
+y<-rnorm(100)
+``` 
+
+# find the 10th value in the vector y (do this using a command)
+```{r}
+
+y[10]
+```
+# check the help to see what the mean of y should be (default value of the command you used)
+```{r}
+?rnorm
+```
+
+# find the actual mean of the vector y
+```{r}
+mean(y)
+```
+ 
+# make a vector called x of 100 integers using every other number (odd numbers). Hint: first = 1, last = 199
+```{r}
+x <- seq(1, 199, 2)
+```
+
+
+# make a scatter plot of y versus x
+# add an orange line at y = 0
+
+```{r}
+plot(x,y)
+ abline(0, 0, col = "orange")
+
+```
+```{r}
+ hist(y)
+
+``` 
+# This should be line 19. The End
+
+
+
+##Second session: data frames and ggplot
+
+
+
+# looking at gapminder
+```{r}
+
+class(gapminder)
+```
+##[1] "tbl_df"     "tbl"        "data.frame"
+
+```{r}
+gapminder
+```
+1-10 of 1,704 rows
+```{r}
+head(gapminder)
+```
+##In using head then wev get 6 rows | 1-3 of 6 columns
+
+
+```{r}
+tail(gapminder)
+```
+#In using tail  we get 6 rows and 6 columns
+```{r}
+names(gapminder)
+
+```
+##Names of Gapminder 
+
+##[1] "country"   "continent"
+##[3] "year"      "lifeExp"  
+##[5] "pop"       "gdpPercap"
+```{r}
+ncol(gapminder)
+```
+##number of column is 6
+```{r}
+nrow(gapminder)
+```
+## number of rows is 1704
+```{r}
+length(gapminder)
+```
+##length is 6
+```{r}
+dim(gapminder)
+```
+##dimention is 1704 rows and 6 colum.
+
+```{r}
+summary(gapminder)
+```
+#        country        continent  
+# Afghanistan:  12   Africa  :624  
+# Albania    :  12   Americas:300  
+# Algeria    :  12   Asia    :396  
+# Angola     :  12   Europe  :360  
+# Argentina  :  12   Oceania : 24  
+# Australia  :  12                 
+# (Other)    :1632                 
+#      year         lifeExp     
+# Min.   :1952   Min.   :23.60  
+# 1st Qu.:1966   1st Qu.:48.20  
+# Median :1980   Median :60.71  
+# Mean   :1980   Mean   :59.47  
+#3rd Qu.:1993   3rd Qu.:70.85  
+# Max.   :2007   Max.   :82.60  
+                               
+#      pop           
+##Min.   :6.001e+04  
+## 1st Qu.:2.794e+06  
+## Median :7.024e+06  
+## Mean   :2.960e+07  
+## 3rd Qu.:1.959e+07  
+## Max.   :1.319e+09  
+                    
+##   gdpPercap       
+## Min.   :   241.2  
+## 1st Qu.:  1202.1  
+## Median :  3531.8  
+## Mean   :  7215.3  
+## 3rd Qu.:  9325.5  
+##Max.   :113523.1  
+                   
+
+# doing some plots in base R
+```{r}
+plot(lifeExp ~ year, gapminder)
+```
+
+
+```{r}
+plot(lifeExp ~ gdpPercap, gapminder)
+```
+
+```{r}
+plot(lifeExp ~ log(gdpPercap), gapminder)
+```
+
+
+# using data frame terminology - dollar signs for columns
+```{r}
+head(gapminder$lifeExp)
+summary(gapminder$lifeExp)
+```
+#[1] 28.801 30.332 31.997 34.020
+#[5] 36.088 38.438
+#   Min. 1st Qu.  Median    Mean 
+#  23.60   48.20   60.71   59.47 
+#3rd Qu.    Max. 
+#  70.85   82.60 
+```{r}
+hist(gapminder$lifeExp,xlab = ("lifeExp"),col = 5)
+??hist()
+```
+
+```{r}
+class(gapminder$continent)
+```
+#In this dataset continent are factor.
+```{r}
+summary(gapminder$continent)
+```
+###summary of continent is given below:
+##Africa Americas     Asia   Europe 
+##     624      300      396      360 
+## Oceania 
+##      24 
+```{r}
+levels(gapminder$continent)
+```
+#levels is given below : 
+##[1] "Africa"   "Americas" "Asia"    
+##[4] "Europe"   "Oceania" 
+
+```{r}
+nlevels(gapminder$continent)
+```
+##[1] 5
+
+
+```{r}
+table(gapminder$continent)
+```
+##Table of countinent is given below :
+
+##  Africa Americas     Asia   Europe 
+##     624      300      396      360 
+## Oceania 
+##      24 
+```{r}
+barplot(table(gapminder$continent))
+```
+##Africa is hig and Oceania is low. 
+
+
+
+
+# using ggplot
+```{r}
+p <-ggplot(filter(gapminder, continent != "Oceania"),
+           aes(x = gdpPercap, y = lifeExp))
+```
+
+```{r}
+p <- p + scale_x_log10()
+
+```
+# our background was set up as an object called p
+
+```{r}
+p + geom_point()
+
+```
+
+```{r}
+p + geom_point(aes(color = continent))
+
+```
+
+```{r}
+p + geom_point(alpha = (1/3), size = 3) + geom_smooth(lwd = 3, se = FALSE)
+```
+
+
+
+```{r}
+p + geom_point(alpha = (1/3), size = 3) +
+  facet_wrap(~ continent) +
+  geom_smooth(lwd = 1.5, se = FALSE, colour = "orange")
+
+```
+#In the end we have a nice looking set of plots. Earlier in the session, trainees see some base R graphics and then a ggplot version which highlights the aesthetics of ggplot.
+
+
+##assignment no 2
+
+# We'll use some built-in data called ToothGrowth.
+# Type in ToothGrowth to have a look at it
+# What sort of object is ToothGrowth? Type a command to answer this
+```{r}
+str(ToothGrowth)
+```
+##'data.frame':	60 obs. of  3 variables:
+## $ len : num  4.2 11.5 7.3 5.8 6.4 10 11.2 11.2 5.2 7 ...
+## $ supp: Factor w/ 2 levels "OJ","VC": 2 2 2 2 2 2 2 2 2 2 ...
+## $ dose: num  0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 ...
+ 
+# What is the median value of the len column?
+```{r}
+summary(ToothGrowth$len)
+```
+##Summary of len
+##Min.     1st Qu.  Median    Mean 
+##4.20     13.07   19.25   18.81 
+##3rd Qu.    Max. 
+##  25.27   33.90
+
+
+# Use table and barplot functions to make a quick graph of the column that contains Factors
+```{r}
+
+barplot(table(ToothGrowth$supp))
+```
+
+# boring graph! You should have seen 30 in both groups. OK let's do some ggplot
+```{r}
+library(ggplot2)
+```
+
+# we'll convert the dose column to be a factor (it is currently numeric)
+```{r}
+ToothGrowth$dose <- as.factor(ToothGrowth$dose)
+ToothGrowth$dose
+```
+#[1] 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5
+# [9] 0.5 0.5 1   1   1   1   1   1  
+#[17] 1   1   1   1   2   2   2   2  
+#[25] 2   2   2   2   2   2   0.5 0.5
+#[33] 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5
+#[41] 1   1   1   1   1   1   1   1  
+#[49] 1   1   2   2   2   2   2   2  
+#[57] 2   2   2   2  
+#Levels: 0.5 1 2
+
+
+# make a ggplot object called p that has the aesthetics x=dose and y=len
+```{r}
+p <- ggplot(ToothGrowth, aes(x=dose, y=len))
+```
+# now add a violin plot to your plot object. Clue you need to use the plus sign to add geom_violin()
+```{r}
+p <- ggplot(ToothGrowth, aes(x=dose, y=len)) +
+  geom_violin()
+```
+
+
+# when you type p it should show the violin plot
+```{r}
+p
+```
+
+
+
+# try adding a red dot to show the median. Use stat_summary to add a point, that is size 2 and red (i.e. four arguments)
+```{r}
+p + stat_summary(fun.y=median, geom="point", size=2, color="red")
+```
+
+# compare what you have to the example graph
+# now add a boxplot to your violin plot. boxplot should be 0.1 wide
+```{r}
+p + geom_boxplot(width=0.1)
+```
+
+
+# when you are happy with this make a new object called p1 with this combination
+```{r}
+
+p1 <- p + geom_boxplot(width=0.1)
+```
+
+
+# now save this by altering the line below to change "myName.png" to your name
+```{r}
+
+ggsave("myName.png",p1,width=5,height=5, dpi="print")
+```
+
+# save your R script with "plotYourName.R" and send me the script and the graph png
+
+
+```{r}
+
+file_name <- file.choose()
+```
+
+```{r}
+df1 <- read.csv("C:\\Users\\prati\\Desktop\\Results (1).csv", header = TRUE, stringsAsFactors = FALSE)
+summary(df1$Mean)
+```
+
+##Min. 1st Qu.  Median    Mean 
+##  674.2  1178.3  1298.3  1302.4 
+##3rd Qu.    Max. 
+## 1428.7  2011.7 
+ 
+# build this up
+```{r}
+p1 <- ggplot(df1, aes(Slice,Mean)) +
+  geom_point() +
+  stat_summary(fun.y = mean, geom = "point", size=2, colour="orange") +
+  geom_smooth() +
+  labs(x = "Frame", y = "GFP")
+p1
+```
+
+
+```{r}
+p2 <- ggplot(df1, aes(Slice,Area)) +
+  geom_point() +
+  stat_summary(fun.y = mean, geom = "point", size=2, colour="orange") +
+  geom_smooth() +
+  labs(x = "Frame", y = "Area (pixels)")
+p2
+```
+
+```{r}
+p3 <- ggplot(df1, aes(Area,Mean)) +
+  geom_point()
+p3
+```
+
+
+
+
+# correct scaling
+# 1 pixel is 0.069 * 0.069 um
+```{r}
+pxSize <- 0.069 * 0.069
+df1$Area_um2 <- df1$Area * pxSize
+p4 <- ggplot(df1, aes(Area_um2,Mean)) +
+  geom_point()
+p4
+```
+# 5 sec per frame
+```{r}
+
+df1$Time <- (df1$Slice - 1) * 5
+p5 <- ggplot(df1, aes(Time,Mean)) +
+  geom_point() +
+  stat_summary(fun.y = mean, geom = "point", size=2, colour="orange") +
+  geom_smooth() +
+  labs(x = "Time (s)", y = "GFP")
+p5
+```
+
+# count spots per frame
+```{r}
+df2 <- as.data.frame(table(df1$Slice))
+
+```
+##1-10 of 100 rows and 5 columns in df2 data set.
+# note the column names
+```{r}
+
+names(df2) <- c("Slice","Count")
+df2$Time <- (df2$Slice - 1) * 5
+
+```
+##Names of df2 is given below :
+##[1] "Slice" "Count" NA      NA     
+##[5] "Time" 
+
+#(Time - 1 ) *5
+##[1]   0   5  10  15  20  25  30  35
+##[9]  40  45  50  55  60  65  70  75
+##[17]  80  85  90  95 100 105 110 115
+##[25] 120 125 130 135 140 145 150 155
+##[33] 160 165 170 175 180 185 190 195
+##[41] 200 205 210 215 220 225 230 235
+##[49] 240 245 250 255 260 265 270 275
+##[57] 280 285 290 295 300 305 310 315
+##[65] 320 325 330 335 340 345 350 355
+##[73] 360 365 370 375 380 385 390 395
+##[81] 400 405 410 415 420 425 430 435
+##[89] 440 445 450 455 460 465 470 475
+##[97] 480 485 490 495
+# doesn't work - why?
+```{r}
+str(df2)
+df2$Slice <- as.integer(df2$Slice)
+```
+##'data.frame':	100 obs. of  4 variables:
+## $ Slice: int  1 2 3 4 5 6 7 8 9 10 ...
+## $ Count: int  48 23 25 52 33 46 55 34 36 35 ...
+## $ NA   : num  NA NA NA NA NA NA NA NA NA NA ...
+## $ Time : num  0 5 10 15 20 25 30 35 40 45 ...
+ 
+## [1]   1   2   3   4   5   6   7   8
+## [9]   9  10  11  12  13  14  15  16
+## [17]  17  18  19  20  21  22  23  24
+## [25]  25  26  27  28  29  30  31  32
+## [33]  33  34  35  36  37  38  39  40
+## [41]  41  42  43  44  45  46  47  48
+## [49]  49  50  51  52  53  54  55  56
+## [57]  57  58  59  60  61  62  63  64
+## [65]  65  66  67  68  69  70  71  72
+## [73]  73  74  75  76  77  78  79  80
+## [81]  81  82  83  84  85  86  87  88
+## [89]  89  90  91  92  93  94  95  96
+## [97]  97  98  99 100
+
+```{r}
+str(df2)
+```
+##'data.frame':	100 obs. of  4 variables:
+## $ Slice: int  1 2 3 4 5 6 7 8 9 10 ...
+## $ Count: int  48 23 25 52 33 46 55 34 36 35 ...
+## $ NA   : num  NA NA NA NA NA NA NA NA NA NA ...
+## $ Time : num  0 5 10 15 20 25 30 35 40 45 ...
+
+```{r}
+df2$Time <- (df2$Slice - 1) * 5
+df2$Time
+```
+##[1]   0   5  10  15  20  25  30  35
+##  [9]  40  45  50  55  60  65  70  75
+## [17]  80  85  90  95 100 105 110 115
+## [25] 120 125 130 135 140 145 150 155
+## [33] 160 165 170 175 180 185 190 195
+## [41] 200 205 210 215 220 225 230 235
+## [49] 240 245 250 255 260 265 270 275
+## [57] 280 285 290 295 300 305 310 315
+## [65] 320 325 330 335 340 345 350 355
+##[73] 360 365 370 375 380 385 390 395
+## [81] 400 405 410 415 420 425 430 435
+## [89] 440 445 450 455 460 465 470 475
+##[97] 480 485 490 495
+
+```{r}
+
+p6 <- ggplot(df2, aes(Time,Count)) +
+  geom_point() +
+  scale_y_continuous(limits = c(0,100)) +
+  geom_smooth() +
+  labs(x = "Time (s)", y = "Puncta")
+p6
+```
+##After this we went through a further example using some data from one person in the lab who needed to plot out their results. We also incorporated a function that I had written for bootstrapping confidence intervals as part of this figure. I have not made this part of the session available in the post.
+
+
+
+
+
+
+
+
+
+
