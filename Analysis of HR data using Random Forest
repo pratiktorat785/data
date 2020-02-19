@@ -1,0 +1,96 @@
+---
+title: "Analysis of HR data using Random Forest"
+author: "pratik"
+date: "11/02/2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+## Loading required packages {.tabset}
+```{r message=FALSE, warning=FALSE}
+
+library(caret)
+library(randomForest)
+library(ggplot2)
+library(plotly)
+```
+
+
+
+
+## Reading data
+```{r message=FALSE, warning=FALSE}
+library(breakDown)
+
+
+dim(HR_data)
+str(HR_data)
+HR_data$left<- as.factor(HR_data$left)
+```
+Note: In this data there are 14999 obs.(rows) of 10 variables (cols)
+Here, we take left is categorical variable ,it is in int , we have to covert it into factor.
+
+```{r}
+names(HR_data)
+```
+
+## Data visualization
+```{r}
+PP<-ggplot(HR_data, aes(x=satisfaction_level, y=average_montly_hours,  color=left,size=number_project)) + geom_point()
+PP
+```
+
+
+Obsevation :-
+
+     1. Many of employees are left who have satisfication level 0.6 to 0.8 and avrage monthly working hours 230 - 300
+     
+     2.Many of employees are left who have satisfication level 0.1 to 0.2 and avrage monthly working hours 210 - 330
+
+
+
+## create data partition
+```{r}
+inter<- createDataPartition(HR_data$left,p=0.7,list = F)
+training<- HR_data[inter,]
+dim(training)
+validation<- HR_data[-inter,]
+dim(validation)
+```
+Note: Here, we partition the data into training & validation. then we fit the model
+
+
+## fit the model
+```{r message=FALSE, warning=FALSE}
+model.RF <- randomForest(left ~ . , data = training ,
+                         na.action=na.roughfix, importance=TRUE)
+
+model.RF
+```
+
+
+## Check importnat variables for prediction
+```{r}
+importance(model.RF,type = 2)
+```
+
+## Test accuracy of fitted model on validation data
+```{r}
+pred <- predict(model.RF, newdata = training)
+
+confusionMatrix( table(pred, training$left) )
+```
+Note: Here, satisfaction_level,number_project,time_spend_company are most imp variables.
+  This model fitted 99% to the data.
+
+
+
+
+
+
+
+
