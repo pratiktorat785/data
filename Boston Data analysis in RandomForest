@@ -1,0 +1,136 @@
+---
+title: "Boston data  in RandomForest
+"
+author: "pratik"
+date: "10/02/2020"
+output: html_document
+---
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r echo=FALSE}
+library(MASS)
+library(caret)
+library(randomForest)
+```
+```{r}
+data("Boston")
+```
+```{r}
+set.seed(1992)
+intrain<-createDataPartition(y=Boston$medv , p=0.7,list=FALSE)
+dim(intrain)
+training   <- Boston[ intrain , ]
+validation <- Boston[-intrain , ]
+dim(training)
+dim (validation)
+```
+##       Resample1 ,training , validation data dimensition simultaneously given below :
+## 356 rows and one columns
+##1-10 of 356 rows | 1-10 of 14 columns
+##1-10 of 150 rows | 1-10 of 14 columns
+```{r}
+model.RF <- randomForest(medv ~ . , data = training ,
+                         na.action=na.roughfix, importance=TRUE)
+model.RF
+
+```
+##Call:
+## randomForest(formula = medv ~ ., data = training, importance = TRUE,      na.action = na.roughfix) 
+##               Type of random forest: regression
+##                     Number of trees: 500
+##No. of variables tried at each split: 4
+##          Mean of squared residuals: 12.62841
+##                    % Var explained: 84.33
+```{r}
+importance(model.RF,type = 2)
+??importance
+```
+##Importance
+##      IncNodePurity
+##crim        1485.2498
+##zn           193.4986
+##indus       2151.7835
+##chas         105.7884
+##nox         1953.6764
+##rm          8385.4631
+##age          729.4537
+##dis         1538.6557
+##rad          212.9735
+##tax         1207.8192
+##ptratio     2040.6647
+##black        541.2611
+##lstat       7419.6122
+
+```{r}
+pred.RF <- predict(model.RF, newdata = validation[,-14])
+pred.RF
+?predict
+```
+##The form of the value returned by predict depends on the class of its argument. 
+##        4         9        10        11        15        22        25        28 
+##35.408510 18.751407 20.676883 21.816860 19.349255 18.469982 16.841302 15.837524 
+##       29        32        34        35        40        46        48        52 
+##19.591252 19.096205 14.797477 15.278621 29.295940 20.311243 19.460880 21.599583 
+##       53        54        57        58        59        68        71        74 
+##26.630093 20.888087 23.771560 32.757667 23.182920 20.480967 23.794670 23.623417 
+##       76        78        79        81        86        87        88        91 
+##22.710637 21.667448 21.588297 26.198857 26.662263 21.196453 22.967903 23.137853 
+##       98       100       103       107       111       114       116       117 
+##41.361877 32.859477 20.021333 18.341929 21.237017 19.519053 19.357753 20.674050 
+##      120       121       122       129       133       134       137       139 
+##20.111217 21.047860 20.782110 17.193793 19.479820 17.125013 16.583340 15.162422 
+##      142       144       146       152       154       155       158       160 
+##15.004719 14.052071 15.368943 18.244162 15.999940 17.367317 29.896477 23.943220 
+##      163       164       165       167       169       171       182       185 
+##42.807470 42.389640 21.027693 42.524197 21.892333 20.554337 26.997813 25.011470 
+##      188       191       192       198       208       210       211       214 
+##28.344857 30.551450 29.230143 32.058109 19.450646 17.592406 20.294572 24.084177 
+##      215       220       222       226       228       230       234       235 
+##19.226576 23.087480 21.709170 40.094277 32.371557 31.287727 42.602113 26.481817 
+##      241       242       243       259       260       262       263       270 
+##25.862007 21.165683 21.871027 35.284420 32.062483 41.336803 43.491690 21.659297 
+##      277       290       293       294       298       299       301       304 
+##33.172990 23.563793 27.484023 23.052357 20.697400 26.269867 28.550340 31.013900 
+##      314       318       319       323       329       334       335       345 
+##22.093667 18.955530 21.949083 22.328920 20.937930 23.712329 23.540179 29.926760 
+##      347       350       359       362       364       366       367       370 
+##18.812040 26.761497 21.369113 20.009347 18.151370 23.138002 18.707703 35.843951 
+##      371       372       378       379       383       386       388       397 
+##34.869719 28.598279 12.726113 11.091121 11.315630  9.895017  9.984459 14.881044 
+##      401       404       406       409       416       419       422       424 
+## 9.577220 11.809184  9.256580 15.367644  9.315376  9.723135 14.546167 13.937110 
+##      425       431       433       444       445       446       454       456 
+##15.039731 15.628988 19.375739 14.710369 10.343942 10.649257 18.633689 15.850847 
+##      457       461       463       465       466       474       476       480 
+##16.729135 16.654303 19.532721 20.819149 20.770119 23.225373 15.293142 19.562156 
+##      486       487       495       500       501       505 
+##21.829187 19.652960 20.824227 19.813933 19.960858 23.558403 
+
+```{r}
+postResample(pred.RF , validation$medv)
+```
+##Given numeric vectors of data, the mean squared error and R-squared are calculated. For factors, the overall agreement rate and Kappa are determined.
+##     RMSE  Rsquared       MAE 
+##3.7135711 0.8846878 2.3151198 
+```{r}
+MAPE <- function(y, yhat) {
+  mean(abs((y - yhat)/y))
+}
+MAPE
+```
+```{r}
+MAPE(validation$medv , pred.RF)
+??MAPE
+```
+##[1] 0.1075599
+```{r}
+RMSPE<- function(y, yhat) {
+  sqrt(mean((y-yhat)/y)^2)
+}
+RMSPE(validation$medv , pred.RF)
+
+```
+##[1] 0.01841999
+
