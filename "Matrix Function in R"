@@ -1,0 +1,195 @@
+---
+title: "Matrix Functions in R"
+author: "pratik"
+date: "23/01/2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Matrix Functions in R
+
+```{r}
+mat1 <- matrix(c(1:9),c(3,3))
+mat1
+is.matrix(mat1)
+```
+##The is.matrix() function takes an object as input and returns TRUE if the object is a matrix output
+      [,1] [,2] [,3]
+[1,]    1    4    7
+[2,]    2    5    8
+[3,]    3    6    9
+[1] TRUE
+
+```{r}
+###2. %*% Operator
+mat2 <- matrix(c(3,2,0,0,0,1,2,-2,1),c(3,3))
+mat1*mat2
+
+mat1%*%mat2
+
+````
+##We can perform the element-wise multiplication of two matrices using the * operator. But we can do matrix multiplication, with the %*% operator
+     [,1] [,2] [,3]
+[1,]    3    0   14
+[2,]    4    0  -16
+[3,]    0    6    9
+
+mat1%*%mat2
+     [,1] [,2] [,3]
+[1,]   11    7    1
+[2,]   16    8    2
+[3,]   21    9    3
+
+```{r}
+###3. solve() Function
+mat2I <- solve(mat2)
+mat2I
+
+```
+The solve() function takes a matrix as input and returns the matrix’s inverse as output is
+     [,1] [,2] [,3]
+[1,]  0.2  0.2    0
+[2,] -0.2  0.3    1
+[3,]  0.2 -0.3    0
+
+```{r}
+###4. t() Function
+tmat <- t(mat1)
+tmat
+````
+The t(mat1) function in R gives us the transpose of a matrix is     
+      [,1] [,2] [,3]
+[1,]    1    2    3
+[2,]    4    5    6
+[3,]    7    8    9
+
+
+```{r}
+##5. dim() and dimnames() Functions
+dim(mat1)
+dim(mat1) <- c(9,1)
+mat1
+
+```
+##TheThe dim() function shows the dimension of a matrix is
+[1] 9 1
+#It can also change the dimension of a matrix and also convert a vector into a matrix by giving it dimensions is 
+        [,1]
+ [1,]    1
+ [2,]    2
+ [3,]    3
+ [4,]    4
+ [5,]    5
+ [6,]    6
+ [7,]    7
+ [8,]    8
+ [9,]    9
+
+```{r}
+dimnames(mat2)
+rnames <- c("row1","row2","row3")
+cnames <- c("col1","col2","col3")
+dimnames(mat2) <- list(rnames,cnames)
+mat2
+```
+##The dimnames(mat1) function shows the names of the rows and columns of a matrix is
+[[1]]
+[1] "row1" "row2" "row3"
+
+[[2]]
+[1] "col1" "col2" "col3"
+.
+
+
+It can also set or change the names of the rows and columns of a matrix is
+
+     col1 col2 col3
+row1    3    0    2
+row2    2    0   -2
+row3    0    1    1.
+
+```{r}
+##6. cbind() and rbind() Functions
+mat3 <- matrix(c(1:12),c(3,4))
+mat4 <- matrix(c(11:22),c(3,4))
+cbind(mat3,mat4)
+rbind(mat3,mat4)
+
+
+```
+
+The cbind() function joins two or more matrices or vectors column-wise. 
+     [,1] [,2] [,3] [,4] [,5] [,6] [,7] ,[8]
+[1,]    1    4    7   10   11   14   17   20  [2,]    2    5    8   11   12   15   18   21
+[3,]    3    6    9   12   13   16   19   22  
+     
+
+
+The rbind() function joins them row-wise is
+     [,1] [,2] [,3] [,4]
+[1,]    1    4    7   10
+[2,]    2    5    8   11
+[3,]    3    6    9   12
+[4,]   11   14   17   20
+[5,]   12   15   18   21
+[6,]   13   16   19   22
+
+
+```{r}
+####7. diag() Function
+diag(mat3)
+diag(diag(mat3))
+
+
+```
+
+The diag() function can extract or replace the diagonal of a matrix is 
+[1] 1 5 9
+ and can also construct a diagonal matrix is
+      [,1] [,2] [,3]
+[1,]    1    0    0
+[2,]    0    5    0
+[3,]    0    0    9
+
+```{r}
+####8. det() Function
+det(mat2)
+```
+The det() function returns the determinant of the input matrix is 10.
+
+
+```{r}
+###9. colSums(), rowSums(), and sum() Functions
+colSums(mat3)
+rowSums(mat3)
+sum(mat3)
+```
+
+The colSums() function returns the sums of each column of the matrix is
+[1]  6 15 24 33
+
+The rowSums(mat3) function returns the sum of each row of a matrix is
+[1]  20 26 30 
+
+The sum(mat3) function returns the sum of all the elements of the matrix is 
+[1]  78
+
+``` {r}
+###10. colMeans(), rowMeans(), and mean() Function
+colMeans(mat3)
+rowMeans(mat3)
+mean(mat3)
+```
+
+The colMeans(mat3) function shows the means of each column of a matrix is 
+[1]  2  5  8 11
+
+The rowMeans(mat3) function shows the means of each row of the matrix is 
+[1] 5.5 6.5 7.5
+
+
+The mean(mat3) function returns the mean of all the elements of the matrix is 
+[1] 6.5
